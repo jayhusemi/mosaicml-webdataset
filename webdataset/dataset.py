@@ -86,7 +86,6 @@ def WebDataset(
         result = urls
     else:
         return ValueError(f"{type(urls)}: unknown shard list type")
-    result = result.then(tariterators.url_opener, handler=handler)
     if cache_dir != "":
         result = result.then(
             shardcache.cache_shards,
@@ -95,6 +94,7 @@ def WebDataset(
             cache_name=cache_name,
             verbose=cache_verbose,
         )
+    result = result.then(tariterators.url_opener, handler=handler)
     result = result.then(tariterators.tar_file_expander, handler=handler)
     result = result.then(tariterators.group_by_keys)
     if repeat:

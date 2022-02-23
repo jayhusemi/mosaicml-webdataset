@@ -13,6 +13,7 @@ import tarfile
 
 import braceexpand
 from .handlers import reraise_exception
+from .shardcache import CacheStream
 
 from . import gopen
 from . import filters
@@ -69,11 +70,13 @@ def url_opener(data, handler=reraise_exception, **kw):
     """Given a stream of url names (packaged in `dict(url=url)`), yield opened streams."""
     for sample in data:
         assert isinstance(sample, dict), sample
-        assert "url" in sample
+        stream = sample.get('stream')
+        if stream and not isinstance(stream, CacheStream):
+            yield sample
+            continue
         url = sample["url"]
         try:
-            stream = gopen.gopen(url, **kw)
-            sample.update(stream=stream)
+            sample['stream'].stream = gopen.gopen(url, **kw)
             yield sample
         except Exception as exn:
             exn.args = exn.args + (url,)

@@ -115,7 +115,7 @@ def cache_shards(urls, cache_dir="./data", cache_size=1e15, cache_name=guess_sha
         os.makedirs(cache_dir)
     for shard in urls:
         url = shard["url"]
-        stream = shard["stream"]
+        stream = shard.get("stream")
         cache_path = os.path.join(cache_dir, cache_name(url))
         if not os.path.exists(cache_path):
             _cache = CacheStream(cache_path, stream, verbose=verbose)
