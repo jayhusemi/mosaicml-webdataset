@@ -356,7 +356,7 @@ class ResampledShards(IterableDataset, Composable):
         """Return an iterator over the shards."""
         rank, world = self.env.rank or (0, 1)
         worker, nworkers = self.env.worker or (0, 1)
-        seed = (rank, worker, os.getpid(), time.time())
+        seed = hash((rank, worker, os.getpid(), time.time()))
         self.rng.seed(seed)
         for _ in range(self.nshards):
             yield dict(url=self.rng.choice(self.urls))
