@@ -145,7 +145,7 @@ def info(data, fmt=None, n=3, every=-1, width=50, stream=sys.stderr, name=""):
 
 
 shuffle_rng = random.Random()
-shuffle_rng.seed((os.getpid(), time.time()))
+shuffle_rng.seed(hash((os.getpid(), time.time())))
 
 def pick(buf, rng):
     k = rng.randint(0, len(buf) - 1)
